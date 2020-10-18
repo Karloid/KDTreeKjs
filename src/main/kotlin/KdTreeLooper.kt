@@ -1,9 +1,9 @@
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
-import utils.Log
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
+import kotlin.time.ExperimentalTime
 
 class KdTreeLooper {
     private var lastTickTs: Double
@@ -34,7 +34,7 @@ class KdTreeLooper {
         val delta = currentTs - lastTickTs
         core.onTick(delta)
         draw(delta)
-        window.setTimeout({ drawLoop() }, 16) //TODO uncomment
+        window.setTimeout({ drawLoop() }, 32)
     }
 
     fun draw(delta: Double) {

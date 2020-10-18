@@ -3,8 +3,8 @@ import utils.Point2D
 import utils.fori
 import utils.then
 
-private val INACTIVE_POINT_SIZE = 1.5
-private val MOUSE_SIZE = 4
+private val INACTIVE_POINT_SIZE = 1.0
+private val MOUSE_SIZE = 4.0
 
 class KdTreeDrawer(val core: Core) {
     fun draw(ctx: CanvasRenderingContext2D) {
@@ -19,7 +19,12 @@ class KdTreeDrawer(val core: Core) {
         core.mouseIsDown.then {
             ctx.fillStyle = "red";
             val mousePos = core.mousePos
-            ctx.fillRect(mousePos, INACTIVE_POINT_SIZE, INACTIVE_POINT_SIZE)
+            ctx.fillRect(mousePos, MOUSE_SIZE, MOUSE_SIZE)
+        }
+
+        core.closestPoint?.let { closet ->
+            ctx.fillStyle = "green";
+            ctx.fillRect(closet, MOUSE_SIZE, MOUSE_SIZE)
         }
     }
 }
