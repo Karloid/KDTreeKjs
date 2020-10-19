@@ -1,15 +1,16 @@
 import org.w3c.dom.CanvasRenderingContext2D
+import utils.KDTree
 import utils.Log
 import utils.Point2D
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-private val POINTS_COUNT = 1_00_000
+private val POINTS_COUNT = 1_000
 
 class Core(val width: Int, val height: Int) {
 
-    var changed = false
+    var changed = true
 
     val mousePos = Point2D(0, 0)
     var mouseIsDown = false
@@ -17,6 +18,7 @@ class Core(val width: Int, val height: Int) {
     private val drawer = KdTreeDrawer(this)
 
     val allPoints = mutableListOf<Point2D>()
+    private var kdTreePoints: KDTree
     var closestPoint: Point2D? = null
 
     init {
@@ -25,6 +27,8 @@ class Core(val width: Int, val height: Int) {
             val y = Random.nextDouble() * height
             allPoints.add(Point2D(x, y))
         }
+
+        kdTreePoints = KDTree(allPoints)
     }
 
     @OptIn(ExperimentalTime::class)
