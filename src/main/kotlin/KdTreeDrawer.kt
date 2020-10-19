@@ -25,14 +25,14 @@ class KdTreeDrawer(val core: Core) {
             ctx.fillRect(closet, MOUSE_SIZE, MOUSE_SIZE)
         }
 
-        ctx.beginPath()
-        ctx.strokeStyle = Color.toStr(0.5f, 0f, 0.6f, 0f)
         drawKdtree(ctx, core.kdTreePoints)
-        ctx.stroke()
     }
 
     private fun drawKdtree(ctx: CanvasRenderingContext2D, kdTreePoints: KDTree) {
+        ctx.beginPath()
+        ctx.strokeStyle = Color.toStr(0.5f, 0f, 0.6f, 0f)
         drawLine(ctx, kdTreePoints.root, null, null)
+        ctx.stroke()
     }
 
     private fun drawLine(ctx: CanvasRenderingContext2D, node: KDNode, x: Double?, y: Double?) {

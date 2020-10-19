@@ -35,14 +35,22 @@ class Core(val width: Int, val height: Int) {
     fun onTick(delta: Double) {
         if (mouseIsDown) {
 
-            closestPoint = measureTimedValue { allPoints.minBy { it.distance(mousePos) } }.let {
+            closestPoint = measureTimedValue { linearLookup() }.let {
                 Log.myLog("found closest in ${it.duration.inMilliseconds}ms method=linear")
                 it.value
             }
+            val linearResult = closestPoint
+            closestPoint = measureTimedValue { kdTreePoints.lookupClosest(mousePos) }.let {
+                Log.myLog("found closest in ${it.duration.inMilliseconds}ms method=kdtree")
+                it.value
+            }
+
         } else {
             closestPoint = null
         }
     }
+
+    private fun linearLookup() = allPoints.minBy { it.distance(mousePos) }
 
     fun drawGame(ctx: CanvasRenderingContext2D) {
         if (!changed) {
