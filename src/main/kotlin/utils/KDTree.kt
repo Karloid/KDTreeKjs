@@ -5,7 +5,7 @@ import kotlin.time.measureTime
 
 @OptIn(ExperimentalTime::class)
 class KDTree(allPoints: MutableList<Point2D>) {
-    private var root: KDNode
+    var root: KDNode
 
     init {
         measureTime {
@@ -16,7 +16,7 @@ class KDTree(allPoints: MutableList<Point2D>) {
     }
 }
 
-class KDNode(allPoints: MutableList<Point2D>, splitByX: Boolean) {
+class KDNode(allPoints: MutableList<Point2D>, val splitByX: Boolean) {
 
     val value: Point2D?
     val splitAt: Double

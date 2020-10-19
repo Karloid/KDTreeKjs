@@ -6,7 +6,7 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-private val POINTS_COUNT = 1_000
+private val POINTS_COUNT = 10_000
 
 class Core(val width: Int, val height: Int) {
 
@@ -18,7 +18,7 @@ class Core(val width: Int, val height: Int) {
     private val drawer = KdTreeDrawer(this)
 
     val allPoints = mutableListOf<Point2D>()
-    private var kdTreePoints: KDTree
+    val kdTreePoints: KDTree
     var closestPoint: Point2D? = null
 
     init {
