@@ -9,6 +9,8 @@ private val POINTS_COUNT = 1_00_000
 
 class Core(val width: Int, val height: Int) {
 
+    var changed = false
+
     val mousePos = Point2D(0, 0)
     var mouseIsDown = false
 
@@ -39,13 +41,18 @@ class Core(val width: Int, val height: Int) {
     }
 
     fun drawGame(ctx: CanvasRenderingContext2D) {
+        if (!changed) {
+            return
+        }
         drawer.draw(ctx)
+        changed = false
     }
 
     fun onMouseMove(x: Double, y: Double) {
         //Log.myLog("onMouseMove $x $y")
         mousePos.x = x
         mousePos.y = y
+        changed = true
     }
 
     fun onMouseDown(x: Double, y: Double, isDown: Boolean) {
@@ -53,5 +60,6 @@ class Core(val width: Int, val height: Int) {
         mousePos.x = x
         mousePos.y = y
         mouseIsDown = isDown
+        changed = true
     }
 }
