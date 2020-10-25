@@ -6,7 +6,7 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-private val POINTS_COUNT = 10_000
+private val POINTS_COUNT = 1_000
 
 class Core(val width: Int, val height: Int) {
 
@@ -40,7 +40,7 @@ class Core(val width: Int, val height: Int) {
                 it.value
             }
             val linearResult = closestPoint
-            closestPoint = measureTimedValue { kdTreePoints.lookupClosest(mousePos) }.let {
+            closestPoint = measureTimedValue { kdTreePoints.lookupClosestAccurate(mousePos) }.let {
                 Log.myLog("found closest in ${it.duration.inMilliseconds}ms method=kdtree")
                 it.value
             }

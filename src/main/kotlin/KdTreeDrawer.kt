@@ -1,7 +1,7 @@
 import org.w3c.dom.CanvasRenderingContext2D
 import utils.*
 
-private val INACTIVE_POINT_SIZE = 1.0
+private val INACTIVE_POINT_SIZE = 1.5
 private val MOUSE_SIZE = 4.0
 
 class KdTreeDrawer(val core: Core) {
@@ -35,7 +35,7 @@ class KdTreeDrawer(val core: Core) {
         ctx.stroke()
     }
 
-    private fun drawLine(ctx: CanvasRenderingContext2D, node: KDNode, x: Double?, y: Double?) {
+    private fun drawLine(ctx: CanvasRenderingContext2D, node: KDTree.KDNode, x: Double?, y: Double?) {
         var newX = x
         var newY = y
         if (node.value != null) {
