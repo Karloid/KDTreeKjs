@@ -76,10 +76,10 @@ class KDTree<T : KDTree.KDValue>(allPoints: MutableList<T>) {
 
             val lookupToAxisDist: Double = abs(lookupPosition.getDimen(depth) - splitAt)
             val nextNode: KDNode<T> = if (lookupPosition.getDimen(depth) > splitAt) {
-                    this.right!!
-                } else {
-                    this.left!!
-                }
+                this.right!!
+            } else {
+                this.left!!
+            }
             val oppositeNode: KDNode<T>? = if (nextNode == right) left else right
 
             var best = nextNode.lookupClosestAccurate(lookupPosition)
