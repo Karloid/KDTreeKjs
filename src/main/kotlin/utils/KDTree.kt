@@ -5,18 +5,18 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @OptIn(ExperimentalTime::class)
-class KDTree(allPoints: MutableList<Point2D>) {
-    var root: KDNode
+class KDTree<T : KDTree.KDValue>(allPoints: MutableList<T>) {
+    var root: KDNode<T>
 
     init {
         measureTime {
-            root = KDNode(allPoints, splitByX = true)
+            root = KDNode(allPoints, depth = 0)
         }.let {
             Log.myLog("KDTree creation took $it ms from ${allPoints.size} elements")
         }
     }
 
-    fun lookupClosestNaive(lookupPosition: Point2D): Point2D {
+    fun lookupClosestNaive(lookupPosition: T): T {
         var currentNode = root
         var iterations = 0
         while (true) {
@@ -27,81 +27,60 @@ class KDTree(allPoints: MutableList<Point2D>) {
             }
 
             //TODO refactor
-            currentNode = if (currentNode.splitByX) {
-                if (lookupPosition.x > currentNode.splitAt) {
-                    currentNode.right!!
-                } else {
-                    currentNode.left!!
-                }
+            currentNode = if (lookupPosition.getDimen(currentNode.depth) > currentNode.splitAt) {
+                currentNode.right!!
             } else {
-                if (lookupPosition.y > currentNode.splitAt) {
-                    currentNode.right!!
-                } else {
-                    currentNode.left!!
-                }
+                currentNode.left!!
             }
         }
     }
 
-    fun lookupClosestAccurate(lookupPosition: Point2D): Point2D {
+    fun lookupClosestAccurate(lookupPosition: T): T {
         return root.lookupClosestAccurate(lookupPosition)!!
     }
 
-    class KDNode(allPoints: MutableList<Point2D>, val splitByX: Boolean) {
+    class KDNode<T : KDValue>(allElements: MutableList<T>, val depth: Int) {
 
-        val value: Point2D?
+        val value: T?
         val splitAt: Double
-        val left: KDNode?
-        val right: KDNode?
+        val left: KDNode<T>?
+        val right: KDNode<T>?
 
         init {
-            if (allPoints.size == 1) {
-                value = allPoints.first()
+            if (allElements.size == 1) {
+                value = allElements.first()
                 left = null
                 right = null
                 splitAt = 0.0
             } else {
                 value = null
                 //TODO find running median
-                allPoints.sortBy { splitByX.then { it.x } ?: it.y }
+                allElements.sortBy { it.getDimen(depth) }
 
-                val splitIndex = allPoints.size / 2
-                val medianElement = allPoints[splitIndex]
-                splitAt = with(medianElement) { splitByX.then { x } ?: y }
+                val splitIndex = allElements.size / 2
+                val medianElement = allElements[splitIndex]
+                splitAt = with(medianElement) { getDimen(depth) }
 
-                val leftList = allPoints.subList(0, splitIndex)
-                val rightList = allPoints.subList(splitIndex, allPoints.size)
+                val leftList = allElements.subList(0, splitIndex)
+                val rightList = allElements.subList(splitIndex, allElements.size)
                 //  Log.myLog("splitIndex=$splitIndex splitByX=$splitByX medianElem=$medianElement " +
                 //          "allPointsSize=${allPoints.size} leftList=$leftList rightList=$rightList")
-                left = KDNode(leftList, !splitByX)
-                right = KDNode(rightList, !splitByX)
+                left = KDNode(leftList, depth + 1)
+                right = KDNode(rightList, depth + 1)
             }
         }
 
 
-        fun lookupClosestAccurate(lookupPosition: Point2D): Point2D? {
+        fun lookupClosestAccurate(lookupPosition: T): T? {
             value?.let { return it }
 
-            var nextNode: KDNode? = null
-            var oppositeNode: KDNode? = null
-
-            val lookupToAxisDist: Double
-            nextNode = if (splitByX) {
-                lookupToAxisDist = abs(lookupPosition.x - splitAt)
-                if (lookupPosition.x > splitAt) {
+            val lookupToAxisDist: Double = abs(lookupPosition.getDimen(depth) - splitAt)
+            val nextNode: KDNode<T> = if (lookupPosition.getDimen(depth) > splitAt) {
                     this.right!!
                 } else {
                     this.left!!
                 }
-            } else {
-                lookupToAxisDist = abs(lookupPosition.y - splitAt)
-                if (lookupPosition.y > this.splitAt) {
-                    this.right!!
-                } else {
-                    this.left!!
-                }
-            }
-            oppositeNode = if (nextNode == right) left else right
+            val oppositeNode: KDNode<T>? = if (nextNode == right) left else right
 
             var best = nextNode.lookupClosestAccurate(lookupPosition)
 
@@ -113,7 +92,7 @@ class KDTree(allPoints: MutableList<Point2D>) {
             return best
         }
 
-        private fun closer(p1: Point2D?, p2: Point2D?, lookupPosition: Point2D): Point2D? {
+        private fun closer(p1: T?, p2: T?, lookupPosition: T): T? {
             if (p1 == null) {
                 return p2
             }
@@ -127,5 +106,10 @@ class KDTree(allPoints: MutableList<Point2D>) {
                 return p1
             }
         }
+    }
+
+    interface KDValue {
+        fun getDimen(dimenIndex: Int): Double
+        fun distance(other: KDValue): Double
     }
 }

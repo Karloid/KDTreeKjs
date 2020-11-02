@@ -28,21 +28,21 @@ class KdTreeDrawer(val core: Core) {
         drawKdtree(ctx, core.kdTreePoints)
     }
 
-    private fun drawKdtree(ctx: CanvasRenderingContext2D, kdTreePoints: KDTree) {
+    private fun drawKdtree(ctx: CanvasRenderingContext2D, kdTreePoints: KDTree<Point2D>) {
         ctx.beginPath()
         ctx.strokeStyle = Color.toStr(0.5f, 0f, 0.6f, 0f)
         drawLine(ctx, kdTreePoints.root, null, null)
         ctx.stroke()
     }
 
-    private fun drawLine(ctx: CanvasRenderingContext2D, node: KDTree.KDNode, x: Double?, y: Double?) {
+    private fun drawLine(ctx: CanvasRenderingContext2D, node: KDTree.KDNode<Point2D>, x: Double?, y: Double?) {
         var newX = x
         var newY = y
         if (node.value != null) {
             newX = node.value.x
             newY = node.value.y
         } else {
-            node.splitByX.then { newX = node.splitAt } ?: kotlin.run { newY = node.splitAt }
+            (node.depth % 2 == 0).then { newX = node.splitAt } ?: kotlin.run { newY = node.splitAt }
         }
 
         if (x != null && y != null && newX != null && newY != null) {

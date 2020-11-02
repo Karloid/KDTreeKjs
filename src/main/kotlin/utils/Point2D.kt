@@ -4,7 +4,7 @@ package utils
 
 import kotlin.math.*
 
-class Point2D {
+class Point2D : KDTree.KDValue {
     var x: Double
     var y: Double
 
@@ -29,6 +29,21 @@ class Point2D {
     constructor(x: Int, y: Int, `val`: Double) {
         this.x = x.toDouble()
         this.y = y.toDouble()
+    }
+
+    override fun getDimen(dimenIndex: Int): Double {
+        return if (dimenIndex % 2 == 0) {
+            x
+        } else {
+            y
+        }
+    }
+
+    override fun distance(other: KDTree.KDValue): Double {
+        if (other !is Point2D) {
+            return 0.0
+        }
+        return distance(other)
     }
 
     override fun toString(): String {

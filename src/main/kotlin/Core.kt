@@ -18,7 +18,7 @@ class Core(val width: Int, val height: Int) {
     private val drawer = KdTreeDrawer(this)
 
     val allPoints = mutableListOf<Point2D>()
-    val kdTreePoints: KDTree
+    val kdTreePoints: KDTree<Point2D>
     var closestPoint: Point2D? = null
 
     init {
